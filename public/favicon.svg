@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <rect width="64" height="64" rx="14" fill="#0F6E56"/>
+  <path d="M32 10 C32 10 32 10 32 10" fill="none"/>
+  <!-- Map pin shape -->
+  <path d="M32 12 C23 12 16 19 16 28 C16 38 32 52 32 52 C32 52 48 38 48 28 C48 19 41 12 32 12 Z" fill="white"/>
+  <!-- House shape inside pin -->
+  <path d="M32 20 L24 26 L24 36 L28 36 L28 31 L36 31 L36 36 L40 36 L40 26 Z" fill="#0F6E56"/>
+  <!-- Door -->
+  <rect x="29.5" y="31" width="5" height="5" fill="#EF9F27"/>
+</svg>

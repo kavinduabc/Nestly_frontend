@@ -1,0 +1,117 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply antialiased text-gray-900 dark:text-gray-100;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-primary-500 ring-offset-2;
+  }
+}
+
+@layer components {
+  .rounded-card {
+    border-radius: 12px;
+  }
+
+  .shadow-card {
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.05), 0 1px 2px -1px rgb(0 0 0 / 0.05);
+  }
+
+  .shadow-card-hover {
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.07);
+  }
+}
+
+/* Leaflet map fixes */
+.leaflet-container {
+  font-family: 'Inter', system-ui, sans-serif;
+  z-index: 0;
+}
+
+/* Smooth transitions for dark mode */
+* {
+  transition-property: background-color, border-color;
+  transition-duration: 150ms;
+  transition-timing-function: ease;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300 dark:bg-gray-700 rounded-full;
+}
+
+/* Animate in utility (simple replacement for radix animations) */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-in {
+  animation: fadeIn 0.15s ease forwards;
+}
+@keyframes slideFromRight {
+  from { opacity: 0; transform: translateX(16px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.slide-in-from-right-5 {
+  animation: slideFromRight 0.2s ease forwards;
+}
+
+@keyframes heroBackgroundFade {
+  from { opacity: 0.7; }
+  to { opacity: 1; }
+}
+
+@keyframes heroSlideUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hero-banner {
+  animation: heroBackgroundFade 0.8s ease-out both;
+}
+
+.hero-banner__badge {
+  animation: heroSlideUp 0.55s 0.1s ease-out both;
+}
+
+.hero-banner__copy {
+  animation: heroSlideUp 0.65s 0.2s ease-out both;
+}
+
+.hero-banner__search {
+  animation: heroSlideUp 0.7s 0.35s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-banner,
+  .hero-banner__badge,
+  .hero-banner__copy,
+  .hero-banner__search {
+    animation: none;
+  }
+}
+
+/* Circular progress */
+.circular-progress {
+  transform: rotate(-90deg);
+}
