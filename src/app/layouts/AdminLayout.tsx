@@ -2,7 +2,7 @@ import { Link, NavLink, Outlet, useNavigate, useLocation } from 'react-router-do
 import { useState } from 'react'
 import {
   LayoutDashboard, CheckSquare, ListChecks, Users, MessageSquare,
-  MapPin, BarChart2, Settings, LogOut, Menu, Bell, ChevronLeft, Moon, Sun, Search
+  MapPin, BarChart2, Settings, LogOut, Menu, Bell, ChevronLeft, Search
 } from 'lucide-react'
 import { Logo } from '@/components/Logo'
 import { Button } from '@/components/Button'
@@ -23,7 +23,7 @@ const navItems = [
 
 export function AdminLayout() {
   const { user, logout } = useAuthStore()
-  const { darkMode, toggleDarkMode, sidebarCollapsed, toggleSidebar } = useUIStore()
+  const { sidebarCollapsed, toggleSidebar } = useUIStore()
   const navigate = useNavigate()
   const location = useLocation()
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -162,14 +162,6 @@ export function AdminLayout() {
           >
             <Bell size={18} aria-hidden />
             <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full" aria-hidden />
-          </button>
-
-          <button
-            onClick={toggleDarkMode}
-            className="p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
-            aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-          >
-            {darkMode ? <Sun size={18} aria-hidden /> : <Moon size={18} aria-hidden />}
           </button>
 
           {/* Avatar menu */}

@@ -2,9 +2,10 @@ interface LogoProps {
   variant?: 'full' | 'symbol'
   className?: string
   size?: number
+  inverted?: boolean
 }
 
-export function Logo({ variant = 'full', className = '', size = 40 }: LogoProps) {
+export function Logo({ variant = 'full', className = '', size = 40, inverted = false }: LogoProps) {
   const symbol = (
     <svg
       width={size}
@@ -36,7 +37,7 @@ export function Logo({ variant = 'full', className = '', size = 40 }: LogoProps)
       {symbol}
       <span className="flex flex-col leading-none">
         <span className="font-bold text-2xl tracking-tight">
-          <span className="text-gray-900 dark:text-white">Nestl</span>
+          <span className={inverted ? 'text-white' : 'text-gray-900 dark:text-white'}>Nestl</span>
           <span className="text-[#1D9E75]">y</span>
         </span>
         <span className="text-[9px] font-medium tracking-[0.2em] text-gray-400 uppercase mt-0.5">

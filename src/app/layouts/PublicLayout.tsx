@@ -1,23 +1,28 @@
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-import { Search, Moon, Sun, User, Heart, LogOut, ChevronDown, Menu, X, MapPin } from 'lucide-react'
+import { Search, User, Heart, LogOut, ChevronDown, Menu, X, MapPin } from 'lucide-react'
 import { Logo } from '@/components/Logo'
 import { Button } from '@/components/Button'
 import { useAuthStore } from '@/features/auth/authStore'
-import { useUIStore } from '@/app/uiStore'
 import { getInitials } from '@/lib/utils'
 
 export function PublicLayout() {
   const { user, isAuthenticated, logout } = useAuthStore()
-  const { darkMode, toggleDarkMode } = useUIStore()
   const navigate = useNavigate()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [userMenuOpen, setUserMenuOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
 
   const handleLogout = () => {
     logout()
     setUserMenuOpen(false)
     navigate('/')
+  }
+
+  const handleSearch = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const query = searchQuery.trim()
+    navigate(query ? `/search?query=${encodeURIComponent(query)}` : '/search')
   }
 
   const navLinks = [
@@ -27,14 +32,29 @@ export function PublicLayout() {
   ]
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-950">
+    <div className="min-h-screen flex flex-col bg-gray-50">
       {/* Navbar */}
-      <header className="sticky top-0 z-40 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+      <header className="sticky top-0 z-40 border-b border-gray-200 bg-gray-50 shadow-sm">
+        <div className="mx-auto flex h-[76px] max-w-7xl items-center justify-between gap-4 px-4 sm:px-6">
           {/* Logo */}
           <Link to="/" aria-label="Nestly home">
             <Logo variant="full" size={36} />
           </Link>
+
+          <form onSubmit={handleSearch} className="hidden max-w-md flex-1 md:flex" role="search">
+            <label htmlFor="navigation-search" className="sr-only">Search properties</label>
+            <div className="relative w-full">
+              <Search size={17} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-primary-900" aria-hidden />
+              <input
+                id="navigation-search"
+                type="search"
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                placeholder="Search by town or property type"
+                className="h-11 w-full rounded-xl border border-white/20 bg-white px-11 pr-4 text-sm text-gray-900 shadow-sm outline-none placeholder:text-gray-400 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/40"
+              />
+            </div>
+          </form>
 
           {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-1" aria-label="Main navigation">
@@ -45,8 +65,8 @@ export function PublicLayout() {
                 className={({ isActive }) =>
                   `px-3 py-2 rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 ${
                     isActive
-                      ? 'text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-950'
-                      : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800'
+                      ? 'bg-primary-50 text-primary-900'
+                      : 'text-primary-900 hover:bg-white hover:text-primary-700'
                   }`
                 }
               >
@@ -57,20 +77,11 @@ export function PublicLayout() {
 
           {/* Right actions */}
           <div className="flex items-center gap-2">
-            {/* Dark mode */}
-            <button
-              onClick={toggleDarkMode}
-              className="p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
-              aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-            >
-              {darkMode ? <Sun size={18} aria-hidden /> : <Moon size={18} aria-hidden />}
-            </button>
-
             {isAuthenticated && user ? (
               <div className="relative hidden md:block">
                 <button
                   onClick={() => setUserMenuOpen(!userMenuOpen)}
-                  className="flex items-center gap-2 px-3 py-1.5 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+                  className="flex items-center gap-2 rounded-xl px-3 py-1.5 text-primary-900 transition-colors hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
                   aria-expanded={userMenuOpen}
                   aria-haspopup="true"
                 >
@@ -78,7 +89,7 @@ export function PublicLayout() {
                     {getInitials(user.name)}
                   </div>
                   <span className="text-sm font-medium text-gray-700 dark:text-gray-200 max-w-24 truncate">{user.name}</span>
-                  <ChevronDown size={14} className="text-gray-400" aria-hidden />
+                  <ChevronDown size={14} className="text-primary-700" aria-hidden />
                 </button>
 
                 {userMenuOpen && (
@@ -114,7 +125,7 @@ export function PublicLayout() {
                 )}
               </div>
             ) : (
-              <div className="hidden md:flex items-center gap-2">
+              <div className="hidden items-center gap-2 md:flex">
                 <Button variant="ghost" size="sm" onClick={() => navigate('/login')}>Sign in</Button>
                 <Button size="sm" onClick={() => navigate('/register')}>Get started</Button>
               </div>
@@ -123,7 +134,7 @@ export function PublicLayout() {
             {/* Mobile menu button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+              className="rounded-lg p-2 text-primary-900 hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 md:hidden"
               aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
               aria-expanded={mobileMenuOpen}
             >
@@ -134,13 +145,27 @@ export function PublicLayout() {
 
         {/* Mobile menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-t border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 px-4 py-3 space-y-1">
+          <div className="space-y-3 border-t border-gray-200 bg-gray-50 px-4 py-4 md:hidden">
+            <form onSubmit={handleSearch} className="flex" role="search">
+              <label htmlFor="mobile-navigation-search" className="sr-only">Search properties</label>
+              <div className="relative w-full">
+                <Search size={17} className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-primary-900" aria-hidden />
+                <input
+                  id="mobile-navigation-search"
+                  type="search"
+                  value={searchQuery}
+                  onChange={(event) => setSearchQuery(event.target.value)}
+                  placeholder="Search properties"
+                  className="h-11 w-full rounded-xl bg-white px-11 text-sm text-gray-900 outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-amber-500/40"
+                />
+              </div>
+            </form>
             {navLinks.map((link) => (
               <NavLink
                 key={link.to}
                 to={link.to}
                 className={({ isActive }) =>
-                  `block px-3 py-2 rounded-lg text-sm font-medium ${isActive ? 'text-primary-600 bg-primary-50 dark:bg-primary-950' : 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800'}`
+                  `block rounded-lg px-3 py-2 text-sm font-medium ${isActive ? 'bg-primary-50 text-primary-900' : 'text-primary-900 hover:bg-white hover:text-primary-700'}`
                 }
                 onClick={() => setMobileMenuOpen(false)}
               >

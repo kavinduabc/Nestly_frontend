@@ -93,7 +93,8 @@ export function HomePage() {
   }
 
   const visibleCards = 3
-  const maxIndex = Math.max(0, (featured.length || 0) - visibleCards)
+  const featuredListings = featured.length > 0 ? featured : featuredData ?? []
+  const maxIndex = Math.max(0, featuredListings.length - visibleCards)
 
   return (
     <div>
@@ -228,7 +229,7 @@ export function HomePage() {
       </section>
 
       {/* Latest listings carousel by type */}
-      <section className="py-16 bg-white dark:bg-gray-900">
+      <section className="py-16 bg-gray-100 dark:bg-gray-900 ">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           {/* Header + tabs */}
           <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
@@ -236,13 +237,13 @@ export function HomePage() {
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Latest listings</h2>
               <p className="text-gray-500 dark:text-gray-400 mt-1">Freshest properties, updated daily</p>
             </div>
-            <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 rounded-xl p-1">
+            <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 rounded-xl p-1 ">
               {PROPERTY_TYPES.map(({ type, label }) => (
                 <button
                   key={type}
                   onClick={() => setLatestTab(type)}
                   className={cn(
-                    'flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500',
+                    'flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 ',
                     latestTab === type
                       ? 'bg-white dark:bg-gray-900 text-gray-900 dark:text-white shadow-sm'
                       : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
@@ -257,7 +258,7 @@ export function HomePage() {
           </div>
 
           {/* Slider */}
-          <div className="relative">
+          <div className="relative"> 
             {latestLoading ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {[1, 2, 3].map((i) => <PropertyCardSkeleton key={i} />)}
@@ -266,7 +267,11 @@ export function HomePage() {
               <>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 overflow-hidden">
                   {latestData.slice(latestIndex, latestIndex + LATEST_VISIBLE).map((p) => (
-                    <PropertyCard key={p.id} property={p} />
+                    <PropertyCard
+                      key={p.id}
+                      property={p}
+                      className="shadow-[0_2px_8px_-2px_rgb(0_0_0/0.12)] hover:shadow-[0_5px_12px_-3px_rgb(0_0_0/0.16)]"
+                    />
                   ))}
                 </div>
 
@@ -318,8 +323,8 @@ export function HomePage() {
             )}
           </div>
 
-          <div className="text-center mt-8">
-            <Button variant="outline" onClick={() => navigate(`/search?type=${latestTab}`)} rightIcon={<ArrowRight size={16} />}>
+          <div className="text-center mt-8 ">
+            <Button className='bg-green-900 text-amber-500' variant="outline" onClick={() => navigate(`/search?type=${latestTab}`)} rightIcon={<ArrowRight size={16} />}>
               View all {PROPERTY_TYPES.find(t => t.type === latestTab)?.label.toLowerCase()}
             </Button>
           </div>
@@ -327,51 +332,90 @@ export function HomePage() {
       </section>
 
       {/* Featured carousel */}
-      <section className="py-16 bg-gray-50 dark:bg-gray-950">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Featured listings</h2>
-              <p className="text-gray-500 dark:text-gray-400 mt-1">Hand-picked properties across Sri Lanka</p>
+      <section className="py-16 bg-gray-100 dark:bg-gray-900">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6">
+          <div className="rounded-3xl border border-gray-200/80 bg-white p-5 shadow-[0_12px_35px_-20px_rgb(15_23_42/0.35)] sm:p-8 dark:border-gray-800 dark:bg-gray-950">
+            <div className="mb-8 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <span className="mb-3 inline-flex items-center gap-2 rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-amber-700 dark:bg-amber-950/40 dark:text-amber-300">
+                  <span className="h-1.5 w-1.5 rounded-full bg-amber-500" aria-hidden />
+                  Curated for you
+                </span>
+                <h2 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-3xl">Featured listings</h2>
+                <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">Hand-picked properties across Sri Lanka</p>
+              </div>
+              <div className="flex items-center justify-between gap-4 sm:justify-end">
+                {featuredListings.length > visibleCards && (
+                  <span className="text-xs font-medium text-gray-400 dark:text-gray-500" aria-live="polite">
+                    {carouselIndex + 1}-{Math.min(carouselIndex + visibleCards, featuredListings.length)} of {featuredListings.length}
+                  </span>
+                )}
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setCarouselIndex(Math.max(0, carouselIndex - 1))}
+                    disabled={carouselIndex === 0}
+                    className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 shadow-sm transition hover:border-primary-300 hover:bg-primary-50 hover:text-primary-600 disabled:pointer-events-none disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
+                    aria-label="Show previous featured listings"
+                  >
+                    <ChevronLeft size={18} aria-hidden />
+                  </button>
+                  <button
+                    onClick={() => setCarouselIndex(Math.min(maxIndex, carouselIndex + 1))}
+                    disabled={carouselIndex >= maxIndex}
+                    className="flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 shadow-sm transition hover:border-primary-300 hover:bg-primary-50 hover:text-primary-600 disabled:pointer-events-none disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800"
+                    aria-label="Show next featured listings"
+                  >
+                    <ChevronRight size={18} aria-hidden />
+                  </button>
+                </div>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setCarouselIndex(Math.max(0, carouselIndex - 1))}
-                disabled={carouselIndex === 0}
-                className="w-9 h-9 rounded-full border border-gray-200 dark:border-gray-700 flex items-center justify-center text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-40 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
-                aria-label="Previous"
-              >
-                <ChevronLeft size={16} aria-hidden />
-              </button>
-              <button
-                onClick={() => setCarouselIndex(Math.min(maxIndex, carouselIndex + 1))}
-                disabled={carouselIndex >= maxIndex}
-                className="w-9 h-9 rounded-full border border-gray-200 dark:border-gray-700 flex items-center justify-center text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 disabled:opacity-40 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
-                aria-label="Next"
-              >
-                <ChevronRight size={16} aria-hidden />
-              </button>
-            </div>
-          </div>
 
-          {featuredLoading ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {featuredLoading ? (
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {[1, 2, 3].map((i) => <PropertyCardSkeleton key={i} />)}
             </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {(featured.length > 0 ? featured : featuredData ?? [])
+            ) : featuredListings.length > 0 ? (
+            <div key={carouselIndex} className="grid animate-in grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {featuredListings
                 .slice(carouselIndex, carouselIndex + visibleCards)
                 .map((p) => (
-                  <PropertyCard key={p.id} property={p} />
+                  <PropertyCard
+                    key={p.id}
+                    property={p}
+                    className="shadow-[0_2px_8px_-2px_rgb(0_0_0/0.12)] hover:shadow-[0_5px_12px_-3px_rgb(0_0_0/0.16)]"
+                  />
                 ))}
             </div>
-          )}
+            ) : (
+              <div className="rounded-2xl border border-dashed border-gray-200 py-14 text-center text-sm text-gray-500 dark:border-gray-800 dark:text-gray-400">
+                Featured properties will appear here soon.
+              </div>
+            )}
 
-          <div className="text-center mt-8">
-            <Button variant="outline" onClick={() => navigate('/search')} rightIcon={<ArrowRight size={16} />}>
+            {featuredListings.length > visibleCards && (
+              <div className="mt-8 flex items-center justify-center gap-2" role="tablist" aria-label="Featured listing slides">
+                {Array.from({ length: maxIndex + 1 }).map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setCarouselIndex(i)}
+                    className={cn(
+                      'h-1.5 rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2',
+                      carouselIndex === i ? 'w-8 bg-primary-600' : 'w-2 bg-gray-300 hover:bg-gray-400 dark:bg-gray-700 dark:hover:bg-gray-600'
+                    )}
+                    role="tab"
+                    aria-selected={carouselIndex === i}
+                    aria-label={`Show featured listings slide ${i + 1}`}
+                  />
+                ))}
+              </div>
+            )}
+
+            <div className="mt-8 text-center">
+              <Button variant="outline" onClick={() => navigate('/search')} rightIcon={<ArrowRight size={16} />}>
               View all listings
-            </Button>
+              </Button>
+            </div>
           </div>
         </div>
       </section>
@@ -409,21 +453,21 @@ export function HomePage() {
       </section>
 
       {/* Popular towns */}
-      <section className="py-16 bg-gray-50 dark:bg-gray-950">
+      <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-8 text-center">Popular towns</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">Popular towns</h2>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {POPULAR_TOWNS.map((townName) => (
               <Link
                 key={townName}
                 to={`/search?town=${encodeURIComponent(townName)}`}
-                className="group bg-white dark:bg-gray-900 rounded-card border border-gray-100 dark:border-gray-800 p-4 flex items-center gap-3 hover:border-primary-300 dark:hover:border-primary-700 hover:shadow-card-hover transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+                className="group bg-white rounded-card border border-gray-100 p-4 flex items-center gap-3 hover:border-primary-900 hover:shadow-card-hover transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
               >
-                <div className="w-9 h-9 rounded-xl bg-primary-50 dark:bg-primary-950 flex items-center justify-center flex-shrink-0">
-                  <MapPin size={16} className="text-primary-600 dark:text-primary-400" aria-hidden />
+                <div className="w-9 h-9 rounded-xl bg-primary-900 flex items-center justify-center flex-shrink-0">
+                  <MapPin size={16} className="text-white" aria-hidden />
                 </div>
                 <div>
-                  <p className="font-semibold text-sm text-gray-900 dark:text-white group-hover:text-primary-600 dark:group-hover:text-primary-400">{townName}</p>
+                  <p className="font-semibold text-sm text-gray-900 group-hover:text-primary-900">{townName}</p>
                   <p className="text-xs text-gray-400">View listings</p>
                 </div>
               </Link>

@@ -23,11 +23,9 @@ export const useUIStore = create<UIState>()(
     (set) => ({
       darkMode: false,
       toggleDarkMode: () =>
-        set((state) => {
-          const next = !state.darkMode
-          if (next) document.documentElement.classList.add('dark')
-          else document.documentElement.classList.remove('dark')
-          return { darkMode: next }
+        set(() => {
+          document.documentElement.classList.remove('dark')
+          return { darkMode: false }
         }),
       toasts: [],
       addToast: (toast) => {
@@ -47,7 +45,8 @@ export const useUIStore = create<UIState>()(
       name: 'nestly-ui',
       partialize: (state) => ({ darkMode: state.darkMode, sidebarCollapsed: state.sidebarCollapsed }),
       onRehydrateStorage: () => (state) => {
-        if (state?.darkMode) document.documentElement.classList.add('dark')
+        document.documentElement.classList.remove('dark')
+        if (state?.darkMode) state.darkMode = false
       },
     }
   )

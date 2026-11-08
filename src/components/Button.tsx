@@ -8,13 +8,13 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: 'bg-primary-500 text-white hover:bg-primary-600 shadow-sm',
-        secondary: 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700',
-        outline: 'border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:bg-transparent dark:text-gray-200 dark:hover:bg-gray-800',
-        ghost: 'text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800',
-        destructive: 'bg-red-500 text-white hover:bg-red-600',
-        amber: 'bg-amber-500 text-white hover:bg-amber-600',
-        link: 'text-primary-600 underline-offset-4 hover:underline p-0 h-auto',
+        default: 'bg-primary-900 text-amber-500 hover:bg-primary-800 shadow-sm',
+        secondary: 'bg-primary-900 text-amber-500 hover:bg-primary-800',
+        outline: 'border border-primary-900 bg-primary-900 text-amber-500 hover:bg-primary-800',
+        ghost: 'bg-primary-900 text-amber-500 hover:bg-primary-800',
+        destructive: 'bg-primary-900 text-amber-500 hover:bg-primary-800',
+        amber: 'bg-primary-900 text-amber-500 hover:bg-primary-800',
+        link: 'bg-primary-900 text-amber-500 underline-offset-4 hover:bg-primary-800 hover:underline',
       },
       size: {
         sm: 'h-8 px-3 text-sm',

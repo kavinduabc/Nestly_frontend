@@ -115,3 +115,8 @@
 .circular-progress {
   transform: rotate(-90deg);
 }
+
+/* Brand palette for interface icons */
+svg {
+  color: #031A15;
+}

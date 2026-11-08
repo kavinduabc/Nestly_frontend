@@ -5,7 +5,6 @@ import { Button } from '@/components/Button'
 import { useAuthStore } from '@/features/auth/authStore'
 import { useUIStore } from '@/app/uiStore'
 import { getInitials } from '@/lib/utils'
-import { Moon, Sun } from 'lucide-react'
 
 const navItems = [
   { to: '/seller/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
@@ -16,7 +15,7 @@ const navItems = [
 
 export function DashboardLayout() {
   const { user, logout } = useAuthStore()
-  const { darkMode, toggleDarkMode, sidebarCollapsed, toggleSidebar } = useUIStore()
+  const { sidebarCollapsed, toggleSidebar } = useUIStore()
   const navigate = useNavigate()
 
   const handleLogout = () => {
@@ -91,14 +90,6 @@ export function DashboardLayout() {
           </button>
 
           <div className="flex-1" />
-
-          <button
-            onClick={toggleDarkMode}
-            className="p-2 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
-            aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-          >
-            {darkMode ? <Sun size={18} aria-hidden /> : <Moon size={18} aria-hidden />}
-          </button>
 
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-full bg-primary-600 flex items-center justify-center text-white text-xs font-bold">
